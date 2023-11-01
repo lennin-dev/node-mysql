@@ -1,3 +1,4 @@
+const { response } = require("express")
 const express = require("express")
 const exphbs = require("express-handlebars")
 const mysql = require("mysql")
@@ -19,7 +20,37 @@ app.use(express.urlencoded({
 app.use(express.json())
 
 // rotas
-app.get("/", (requisicao, resposta) => {
+app.post("/register/save", (request, response) =>{
+
+    const { title, pageqty} = request.body
+
+    const book = {
+       title,
+       pageqty
+    }
+
+    const query = `
+    INSERT INTO books (title, pageqty)
+    VALUES ('${title}', '${title}')
+    `
+
+    conn.query(query, (error) => {
+        if (error) {
+            console.log(error)
+            return
+        }
+
+        response.redirect("/")
+    })
+})
+
+
+app.get("/register", (request, response) => {
+    response.render("register")
+})
+
+
+app.get("/", (request, resposta) => {
     resposta.render("home")
 })
 
@@ -41,7 +72,7 @@ conn.connect((error) => {
 
     console.log("Conectado ao MySQL!")
 
-    app.listen(300, () =>{
+    app.listen(3000, () =>{
         console.log("Servidor rodando na porta 3000!")
     })
 })
